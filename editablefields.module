@@ -294,14 +294,6 @@ function editablefields_form($form, &$form_state, $entity_type, $entity, $field,
   // Set #parents to 'top-level' by default.
   $form += array('#parents' => array());
 
-  // Avoid browsers caching the form fields
-  // Add drupal_add_http_header to the #attached callback for the form
-  $form['#attached']['drupal_add_http_header'] = array(
-    array('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT'), // Date in the past
-    array('Cache-Control', 'no-cache, no-store, must-revalidate', 'post-check=0, pre-check=0'),
-    array('Pragma', 'no-cache'),
-  );
-
   $form['#attached']['library'][] = array('editablefields', 'editablefields');
   $form['#attributes'] = array('class' => array('editable-field'));
 
