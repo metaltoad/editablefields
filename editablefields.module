@@ -18,6 +18,7 @@ function editablefields_field_formatter_info() {
         'fallback_format' => NULL,
         'fallback_settings' => array(),
         'click_to_edit' => FALSE,
+        'enable_ajax_saving' => TRUE,
         'click_to_edit_style' => 'button',
         'empty_text' => '',
       ),
@@ -68,6 +69,13 @@ function editablefields_field_formatter_settings_form($field, $instance, $view_m
     '#type' => 'checkbox',
     '#title' => t('Click to edit'),
     '#default_value' => $settings['click_to_edit'],
+  );
+
+  $element['enable_ajax_saving'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Save via Ajax'),
+    '#description' => t('When checked, create an ajax-enabled submission.'),
+    '#default_value' => $settings['enable_ajax_saving'],
   );
 
   $element['click_to_edit_style'] = array(
@@ -351,14 +359,16 @@ function editablefields_form($form, &$form_state, $entity_type, $entity, $field,
     $form += field_default_form($entity_type, $entity, $field, $instance, $langcode, $items, $form, $form_state);
 
     $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
-      '#name' => 'submit-' . implode('-', $form['#parents']),
-      '#type' => 'submit',
-      '#value' => t('Save'),
-      '#ajax' => $ajax,
-      '#submit' => array('editablefields_form_submit'),
-      '#limit_validation_errors' => array($form['#parents']),
-    );
+    if(isset($display['settings']['enable_ajax_saving']) && $display['settings']['enable_ajax_saving']) {
+      $form['actions']['submit'] = array(
+        '#name' => 'submit-' . implode('-', $form['#parents']),
+        '#type' => 'submit',
+        '#value' => t('Save'),
+        '#ajax' => $ajax,
+        '#submit' => array('editablefields_form_submit'),
+        '#limit_validation_errors' => array($form['#parents']),
+      );
+    }
   }
   else {
     $edit_style = isset($display['settings']['click_to_edit_style']) ? $display['settings']['click_to_edit_style'] : 'button';
